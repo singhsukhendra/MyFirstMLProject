@@ -1,0 +1,56 @@
+import streamlit as st
+import numpy as np
+import pandas as pd
+
+
+def generate_house_data(n_samples=100):
+  np.random.seed(50)
+  size = np.random.normal(1400, 50, n_samples)
+  price = size * 50 + np.random.normal(0, 50, n_samples)
+  # Create a DataFrame and return it
+  df = pd.DataFrame({'size': size, 'price': price})  
+  return df
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import LinearRegression
+
+
+
+def train_model():
+  df = generate_house_data(n_samples=100)
+  X = df[['size']]
+  Y = df['price']
+
+  X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
+  model = LinearRegression()
+  model.fit(X_train, Y_train)
+  return model
+
+
+
+def main():
+  st.title('House Price Prediction')
+  st.write("Put in your house size to know its price")
+  model = train_model()
+
+  size = st.number_input("House size", min_value=500, max_value=2000, value=1500)
+
+  # Assuming st.utton is a typo and should be st.button
+  if st.button("Pridict price"):  
+    predicted_price = model.predict([[size]])
+    st.success(f'Estimated price: ${predicted_price[0]:,.2f}')
+
+    df = generate_house_data()
+    
+    # Assuming px is meant to be plotly.express
+    import plotly.express as px  
+
+    fig = px.scatter(df, x="size", y="price", title="House Price vs Size")
+    fig.add_scatter(x=[size], y=[predicted_price], mode="markers", marker=dict(color="red"), size=10, name="Prediction")
+
+    st.plotly_chart(fig)
+
+if __name__ == "__main__":
+  main()
