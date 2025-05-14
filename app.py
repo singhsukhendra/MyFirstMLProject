@@ -24,7 +24,9 @@ def train_model():
 
 # Main Streamlit app
 def main():
-    st.title('🏡 House Price Prediction')
+    st.title('🏡 House Price Prediction
+    st.title('A sample project by SS')
+    
     st.write("Enter the size of your house to estimate its price.")
 
     model = train_model()
